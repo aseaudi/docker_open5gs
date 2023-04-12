@@ -59,8 +59,7 @@ RUN apt-get update && \
         libnghttp2-dev \
         libtins-dev \
         libidn11-dev \
-        libtalloc-dev \
-        tcpdump
+        libtalloc-dev
 
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && apt-get install -y nodejs
 
@@ -99,6 +98,7 @@ RUN apt-get update && \
         python3-setuptools \
         python3-wheel \
         python3-pip \
+        tcpdump \
         iptables && \
     apt-get autoremove -y && apt-get autoclean
 
