@@ -25,6 +25,8 @@ smf:
           - uri: http://NRF_IP:7777
         scp:
           - uri: http://SCP_IP:7777
+    ctf:
+      enable: auto          
     gtpc:
       server:
         - address: SMF_IP

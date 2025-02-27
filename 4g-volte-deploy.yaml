@@ -479,6 +479,46 @@ services:
     networks:
       default:
         ipv4_address: ${GRAFANA_IP}
+# OCS
+  ocs:
+    image: sigscale/ocs
+    container_name: ocs
+    hostname: ocs.epc.mnc001.mcc001.3gppnetwork.org
+    env_file:
+      - .env
+    environment:
+      - COMPONENT_NAME=ocs
+    entrypoint: ["sleep", "1000000"]
+#    entrypoint:
+#      - /mnt/ocs/ocs_init.sh
+    privileged: true
+#    volumes:
+#      - ./ocs:/mnt/ocs
+#      - ocsdb2:/home/otp/db
+#      - ./ocs/initialize:/home/otp/bin/initialize
+#      - ./ocs/start:/home/otp/bin/start
+#      - ./ocs/sys.config:/home/otp/releases/3.2.9/sys.config
+#      - /etc/timezone:/etc/timezone:ro
+#      - /etc/localtime:/etc/localtime:ro
+    # depends_on:
+    #   - mongo2
+    expose:
+      - "3868/udp"
+      - "3868/tcp"
+      - "3868/sctp"
+      - "5868/udp"
+      - "5868/tcp"
+      - "5868/sctp"
+      - "4161/udp"
+      - "4161/tcp"
+      - "4161/sctp"
+      - "8080/tcp"
+    ports:
+      - "8081:8080/tcp"
+      - "3869:3868/tcp"
+    networks:
+      default:
+        ipv4_address: 172.22.0.220
 networks:
   default:
     name: docker_open5gs_default
