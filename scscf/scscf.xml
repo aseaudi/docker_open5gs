@@ -34,4 +34,5 @@
         <SupportedVendor vendor="10415" />
 
 	<DefaultRoute FQDN="hss.IMS_DOMAIN" metric="10"/>
+	<DefaultRoute FQDN="ocs.IMS_DOMAIN" metric="20"/>
 </DiameterPeer>
