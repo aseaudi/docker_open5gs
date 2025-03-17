@@ -479,6 +479,19 @@ services:
     networks:
       default:
         ipv4_address: ${GRAFANA_IP}
+  asterisk:
+    image: andrius/asterisk
+    container_name: asterisk
+    # entrypoint: ["sleep", "1000000"]
+    volumes:
+      #- ./asterisk/etc/asterisk/:/etc/asterisk/
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "5566:5060/udp"
+    networks:
+      default:
+        ipv4_address: 172.22.0.212        
 networks:
   default:
     name: docker_open5gs_default
