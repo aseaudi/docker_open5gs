@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE scenario SYSTEM "sipp.dtd">
+<scenario name="Register then Invite">
+
+  <!-- Step 1: Send REGISTER request -->
+  <send>
+    <![CDATA[
+REGISTER sip:ims.mnc001.mcc001.3gppnetwork.org SIP/2.0
+Via: SIP/2.0/UDP 172.22.0.21:5080;branch=z9hG4bKb994ca3f0ee2f117
+From: <sip:001010123456790@ims.mnc001.mcc001.3gppnetwork.org>;tag=8d226d9b8198
+To: <sip:001010123456790@ims.mnc001.mcc001.3gppnetwork.org>
+Call-ID: [call_id]
+CSeq: 477 REGISTER
+Contact: <sip:172.22.0.21:5080>;+g.3gpp.icsi-ref="urn:Aurn-7:3gpp-service.ims.icsi.mmtel";+g.3gpp.smsip;video;+sip.instance="<urn:gsma:imei:86728703-952237-0>";+g.3gpp.accesstype="wired"
+Supported: path
+Allow: INVITE, PRACK, ACK, CANCEL, BYE, OPTIONS, UPDATE, INFO, NOTIFY, MESSAGE
+Max-Forwards: 70
+Date: Thu, 27 Feb 2025 21:49:38 GMT
+User-Agent: sipclientgo/1.0
+Content-Length: 0
+P-Access-Network-Info: IEEE-802.3
+    ]]>
+  </send>
+  <!-- 
+  <recv response="401" />
+
+<send retrans="500">
+    <![CDATA[
+REGISTER sip:ims.mnc001.mcc001.3gppnetwork.org SIP/2.0
+Via: SIP/2.0/UDP 172.22.0.21:5080;branch=z9hG4bK85cafaa704a08388
+From: <sip:001010123456790@ims.mnc001.mcc001.3gppnetwork.org>;tag=a2ee0a5bdf14
+To: <sip:001010123456790@ims.mnc001.mcc001.3gppnetwork.org>
+Call-ID: 9bf13fa-5d7cd98-f74df443-f48c-4f93-a170-d0f79e88f377
+CSeq: 333 REGISTER
+Contact: <sip:172.22.0.21:5080>;+g.3gpp.icsi-ref="urn:Aurn-7:3gpp-service.ims.icsi.mmtel";+g.3gpp.smsip;video;+sip.instance="<urn:gsma:imei:86728703-952237-0>";+g.3gpp.accesstype="wired"
+Supported: path
+Allow: INVITE, PRACK, ACK, CANCEL, BYE, OPTIONS, UPDATE, INFO, NOTIFY, MESSAGE
+Max-Forwards: 70
+Date: Thu, 27 Feb 2025 21:49:38 GMT
+User-Agent: sipclientgo/1.0
+Content-Length: 0
+Authorization: Digest username="001010123456790", realm="ims.mnc001.mcc001.3gppnetwork.org", nonce="bca43ebd536748c3abb64bc8dfca6b02", uri="sip:ims.mnc001.mcc001.3gppnetwork.org", response="e5ea81c6a7b686d7d22d035a7e62caf6", algorithm=MD5, qop=auth, nc=00000001, cnonce="8020cd53294f5527"
+P-Access-Network-Info: IEEE-802.3
+    ]]>
+  </send> -->
+ <!-- <recv response="100"/> -->
+  <recv response="100" optional="true">
+  </recv>
+ <recv response="200">
+  </recv>
+  <!-- Step 3: Wait for 2 seconds -->
+  <!-- <pause milliseconds="2000" /> -->
+
+  <!-- Step 4: Send INVITE to number 1234 -->
+  <send>
+    <![CDATA[
+INVITE sip:0198765432100;phone-context=ims.mnc001.mcc001.3gppnetwork.org@ims.mnc001.mcc001.3gppnetwork.org;user=phone SIP/2.0
+From: <tel:0298765432100>;tag=401181971
+To: <sip:0198765432100;phone-context=ims.mnc001.mcc001.3gppnetwork.org@ims.mnc001.mcc001.3gppnetwork.org;user=phone>
+CSeq: 401181964 INVITE
+Call-ID: 401181964_495972856@192.168.101.3
+Via: SIP/2.0/TCP 192.168.101.3:5060;branch=z9hG4bK559617467
+Max-Forwards: 70
+Contact: <sip:192.168.101.3:5060>;+g.3gpp.icsi-ref="urn%3Aurn-7%3A3gpp-service.ims.icsi.mmtel";+g.3gpp.mid-call;+g.3gpp.srvcc-alerting;+g.3gpp.ps2cs-srvcc-orig-pre-alerting
+Route: <sip:10.4.128.21:5060;lr>,<sip:orig@scscf.ims.mnc001.mcc001.3gppnetwork.org:6060;lr>
+P-Access-Network-Info: 3GPP-E-UTRAN-FDD; utran-cell-id-3gpp=001010001000019C
+P-Preferred-Identity: <tel:0298765432100>
+Allow: INVITE,ACK,CANCEL,BYE,UPDATE,PRACK,MESSAGE,REFER,NOTIFY,INFO,OPTIONS
+Content-Type: application/sdp
+Accept: application/sdp,application/3gpp-ims+xml
+P-Preferred-Service: urn:urn-7:3gpp-service.ims.icsi.mmtel
+Accept-Contact: *;+g.3gpp.icsi-ref="urn%3Aurn-7%3A3gpp-service.ims.icsi.mmtel"
+Supported: timer,100rel,replaces,histinfo,tdialog
+P-Early-Media: supported
+Content-Length: 469
+Session-Expires: 1800;refresher=uac
+    ]]>
+  </send>
+
+  <!-- Step 5: Expect typical INVITE responses (100, 180, 200) -->
+  <recv response="100" optional="true" />
+  <recv response="180" optional="true" />
+  <recv response="200" />
+
+  <!-- Step 6: Send ACK to complete the INVITE -->
+  <send>
+    <![CDATA[
+ACK sip:1234@[remote_ip]:[remote_port] SIP/2.0
+Via: SIP/2.0/[transport] [local_ip]:[local_port];branch=[branch]
+From: <sip:user1@[remote_ip]:[remote_port]>;tag=[call_number]
+To: <sip:1234@[remote_ip]:[remote_port]>[peer_tag_param]
+Call-ID: [call_id]
+CSeq: 1 ACK
+Max-Forwards: 70
+Content-Length: 0
+    ]]>
+  </send>
+
+  <!-- Step 7: Send BYE to terminate the call -->
+  <send>
+    <![CDATA[
+BYE sip:1234@[remote_ip]:[remote_port] SIP/2.0
+Via: SIP/2.0/[transport] [local_ip]:[local_port];branch=[branch]
+From: <sip:user1@[remote_ip]:[remote_port]>;tag=[call_number]
+To: <sip:1234@[remote_ip]:[remote_port]>[peer_tag_param]
+Call-ID: [call_id]
+CSeq: 2 BYE
+Max-Forwards: 70
+Content-Length: 0
+    ]]>
+  </send>
+
+  <!-- Step 8: Receive 200 OK for BYE -->
+  <recv response="200" />
+
+</scenario>
+
+

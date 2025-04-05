@@ -16,7 +16,6 @@
 >
 	<Peer FQDN="hss.IMS_DOMAIN" Realm="IMS_DOMAIN" port="PYHSS_BIND_PORT"/>
 	<Peer FQDN="ocs.IMS_DOMAIN" Realm="IMS_DOMAIN" port="OCS_BIND_PORT"/>
-		
 	<Acceptor port="SCSCF_BIND_PORT" bind="SCSCF_IP"/>
 
 	<Auth id="16777216" vendor="10415"/><!-- 3GPP Cx -->
@@ -34,4 +33,5 @@
         <SupportedVendor vendor="10415" />
 
 	<DefaultRoute FQDN="hss.IMS_DOMAIN" metric="10"/>
+      <DefaultRoute FQDN="ocs.IMS_DOMAIN" metric="20"/>
 </DiameterPeer>

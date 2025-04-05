@@ -337,6 +337,8 @@ services:
       - dns
       - mysql
       - pyhss
+    ports:
+      - "2222:22/tcp"
     expose:
       - "3870/udp"
       - "3870/tcp"
@@ -367,6 +369,9 @@ services:
       - rtpengine
       - icscf
       - scscf
+    ports:
+      - "5060:5060/tcp"
+      - "5060:5060/udp"
     expose:
       - "3871/udp"
       - "3871/tcp"
@@ -488,18 +493,17 @@ services:
       - .env
     environment:
       - COMPONENT_NAME=ocs
-    entrypoint: ["sleep", "1000000"]
-#    entrypoint:
-#      - /mnt/ocs/ocs_init.sh
+    #entrypoint: ["sleep", "1000000"]
+    entrypoint: ["bash", "/mnt/ocs/ocs_init.sh"]
     privileged: true
-#    volumes:
-#      - ./ocs:/mnt/ocs
-#      - ocsdb2:/home/otp/db
+    volumes:
+      - ./ocs:/mnt/ocs
+      - ocsdb:/home/otp/db
 #      - ./ocs/initialize:/home/otp/bin/initialize
-#      - ./ocs/start:/home/otp/bin/start
-#      - ./ocs/sys.config:/home/otp/releases/3.2.9/sys.config
-#      - /etc/timezone:/etc/timezone:ro
-#      - /etc/localtime:/etc/localtime:ro
+      - ./ocs/start:/home/otp/bin/start
+      - ./ocs/sys.config:/home/otp/releases/ocs-3.4.28/sys.config
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
     # depends_on:
     #   - mongo2
     expose:
@@ -519,6 +523,35 @@ services:
     networks:
       default:
         ipv4_address: 172.22.0.220
+  asterisk:
+    image: andrius/asterisk
+    container_name: asterisk
+    # entrypoint: ["sleep", "1000000"]
+    volumes:
+      #- ./asterisk/etc/asterisk/:/etc/asterisk/
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "5566:5060/udp"
+    networks:
+      default:
+        ipv4_address: 172.22.0.212
+  linphone:
+    image: ubuntu:22.04
+    container_name: linphone
+    entrypoint: ["sleep", "1000000"]
+  vxr:
+    image: ubuntu:22.04
+    container_name: vxr
+    privileged: true
+    entrypoint: ["sleep", "1000000"]
+    expose:
+      - "5060/udp"
+      - "5060/tcp"
+      - "22/tcp"
+    networks:
+      default:
+        ipv4_address: 172.22.0.213
 networks:
   default:
     name: docker_open5gs_default
@@ -532,3 +565,5 @@ volumes:
     name: docker_open5gs_mongodbdata
   dbdata:
     name: docker_open5gs_dbdata
+  ocsdb:
+    name: ocsdb

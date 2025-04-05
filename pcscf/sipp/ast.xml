@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE scenario SYSTEM "sipp.dtd">
+
+<scenario name="Register with Asterisk">
+  <!-- Send initial REGISTER -->
+  <send retrans="500">
+    <![CDATA[
+      REGISTER sip:[remote_ip]:[remote_port] SIP/2.0
+      Via: SIP/2.0/UDP [local_ip]:[local_port];branch=[branch]
+      From: <sip:+15551234567@[remote_ip]:[remote_port]>;tag=[call_number]
+      To: <sip:+15551234567@[remote_ip]:[remote_port]>
+      Call-ID: [call_id]
+      CSeq: 1 REGISTER
+      Contact: <sip:+15551234567@[local_ip]:[local_port]>
+      Max-Forwards: 70
+      Expires: 3600
+      Content-Length: 0
+    ]]>
+  </send>
+
+  <!-- Expect 401 Unauthorized with WWW-Authenticate -->
+  <recv response="401" auth="true">
+  </recv>
+
+  <!-- Send REGISTER with Digest Authentication -->
+  <send retrans="500">
+    <![CDATA[
+      REGISTER sip:[remote_ip]:[remote_port] SIP/2.0
+      Via: SIP/2.0/UDP [local_ip]:[local_port];branch=[branch]
+      From: <sip:+15551234567@[remote_ip]:[remote_port]>;tag=[call_number]
+      To: <sip:+15551234567@[remote_ip]:[remote_port]>
+      Call-ID: [call_id]
+      CSeq: 2 REGISTER
+      Contact: <sip:+15551234567@[local_ip]:[local_port]>
+      Max-Forwards: 70
+      Expires: 3600
+      Authorization: Digest username="+15551234567",realm="asterisk",nonce="[nonce]",uri="sip:[remote_ip]:[remote_port]",response="[response]",algorithm=MD5
+      Content-Length: 0
+    ]]>
+  </send>
+
+  <!-- Expect 200 OK for successful registration -->
+  <recv response="200">
+  </recv>
+
+  <!-- Pause to simulate staying registered -->
+  <pause milliseconds="5000"/>
+
+  <!-- Optional: Unregister by setting Expires to 0 -->
+  <send retrans="500">
+    <![CDATA[
+      REGISTER sip:[remote_ip]:[remote_port] SIP/2.0
+      Via: SIP/2.0/UDP [local_ip]:[local_port];branch=[branch]
+      From: <sip:+15551234567@[remote_ip]:[remote_port]>;tag=[call_number]
+      To: <sip:+15551234567@[remote_ip]:[remote_port]>
+      Call-ID: [call_id]
+      CSeq: 3 REGISTER
+      Contact: <sip:+15551234567@[local_ip]:[local_port]>
+      Max-Forwards: 70
+      Expires: 0
+      Content-Length: 0
+    ]]>
+  </send>
+
+  <!-- Expect 200 OK for unregistration -->
+  <recv response="200">
+  </recv>
+</scenario>
