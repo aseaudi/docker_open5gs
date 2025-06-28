@@ -1,0 +1,10 @@
+FROM docker_osmomsc
+#COPY osmo-msc.old /usr/bin/
+COPY osmo-msc /usr/bin/
+#COPY freeDiameter.conf /usr/bin/
+#COPY libs6/libfdcore.so  libfdcore.so.1.5.0  libfdcore.so.6  libfdproto.so  libfdproto.so.1.5.0  libfdproto.so.6 /usr/lib/x86_64-linux-gnu/
+COPY libs6/* /usr/lib/x86_64-linux-gnu/
+RUN apt update && apt install libosmo-sigtran11 libidn11 mercurial cmake make gcc g++ bison flex libsctp-dev libgnutls28-dev libgcrypt-dev libidn11-dev make cmake git build-essential -y
+RUN git clone https://github.com/open5gs/freeDiameter.git && cd freeDiameter && mkdir build && cd build && cmake .. && make && make install
+CMD ["/bin/sh", "-c", "/mnt/osmomsc/osmomsc_init.sh &&     rm -f /mnt/osmomsc/sms.db* &&     cd /mnt/osmomsc && /usr/bin/osmo-msc -c /etc/osmocom/osmo-msc.cfg"]
+
