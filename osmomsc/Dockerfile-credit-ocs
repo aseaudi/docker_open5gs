@@ -1,10 +1,8 @@
 FROM docker_osmomsc
-#COPY osmo-msc.old /usr/bin/
-COPY osmo-msc /usr/bin/
-#COPY freeDiameter.conf /usr/bin/
-#COPY libs6/libfdcore.so  libfdcore.so.1.5.0  libfdcore.so.6  libfdproto.so  libfdproto.so.1.5.0  libfdproto.so.6 /usr/lib/x86_64-linux-gnu/
-COPY libs6/* /usr/lib/x86_64-linux-gnu/
-RUN apt update && apt install libosmo-sigtran11 libidn11 mercurial cmake make gcc g++ bison flex libsctp-dev libgnutls28-dev libgcrypt-dev libidn11-dev make cmake git build-essential -y
-RUN git clone https://github.com/open5gs/freeDiameter.git && cd freeDiameter && mkdir build && cd build && cmake .. && make && make install
-CMD ["/bin/sh", "-c", "/mnt/osmomsc/osmomsc_init.sh &&     rm -f /mnt/osmomsc/sms.db* &&     cd /mnt/osmomsc && /usr/bin/osmo-msc -c /etc/osmocom/osmo-msc.cfg"]
 
+RUN apt update && apt install mercurial cmake make gcc g++ bison flex libsctp-dev libgnutls28-dev libgcrypt-dev libidn11-dev make cmake git build-essential -y
+RUN git clone https://github.com/open5gs/freeDiameter.git && cd freeDiameter && mkdir build && cd build && cmake .. && make && make install
+RUN apt install build-essential gcc g++ make automake autoconf libtool pkg-config libtalloc-dev libpcsclite-dev libortp-dev libsctp-dev libssl-dev libdbi-dev libdbd-sqlite3 libsqlite3-dev libpcap-dev libc-ares-dev libgnutls28-dev libsctp-dev sqlite3 libsofia-sip-ua-glib-dev libuhd-dev libusb-1.0-0-dev -y
+RUN apt install libosmocore-dev libosmo-abis-dev libosmo-sigtran-dev libosmo-mgcp-client-dev libosmo-gsup-client-dev libsmpp34-dev libsmpp34-dev libasn1c-dev libosmo-ranap-dev -y
+RUN git clone https://github.com/aseaudi/osmo-msc.git && cd osmo-msc && git checkout credit-ocs && autoreconf -fi && ./configure --enable-iu --enable-smpp LIBS="-lfdcore -lfdproto" && make -j$(nproc) && cp src/osmo-msc/osmo-msc /usr/bin/osmo-msc
+CMD ["/bin/sh", "-c", "/mnt/osmomsc/osmomsc_init.sh &&     rm -f /mnt/osmomsc/sms.db* &&     cd /mnt/osmomsc && /usr/bin/osmo-msc -c /etc/osmocom/osmo-msc.cfg"]

@@ -29,12 +29,17 @@
 [ ${#MNC} == 3 ] && THREEGPP_REALM="mnc${MNC}.mcc${MCC}.3gppnetwork.org" || THREEGPP_REALM="mnc0${MNC}.mcc${MCC}.3gppnetwork.org"
 
 cp /mnt/osmomsc/osmo-msc.cfg /etc/osmocom
+mkdir /etc/freeDiameter
+cp /mnt/osmomsc/freeDiameter.conf /etc/freeDiameter/freeDiameter.conf
+cp /mnt/osmomsc/*.pem /etc/ssl/
 
 sed -i 's|OSMOMSC_IP|'$OSMOMSC_IP'|g' /etc/osmocom/osmo-msc.cfg
 sed -i 's|OSMOHLR_IP|'$OSMOHLR_IP'|g' /etc/osmocom/osmo-msc.cfg
 sed -i 's|MNC|'$MNC'|g' /etc/osmocom/osmo-msc.cfg
 sed -i 's|MCC|'$MCC'|g' /etc/osmocom/osmo-msc.cfg
 sed -i 's|THREEGPP_REALM|'$THREEGPP_REALM'|g' /etc/osmocom/osmo-msc.cfg
+sed -i 's|THREEGPP_REALM|'$THREEGPP_REALM'|g' /etc/freeDiameter/freeDiameter.conf
+sed -i 's|OCS_IP|'$OCS_IP'|g' /etc/freeDiameter/freeDiameter.conf
 
 # Sync docker time
 #ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
