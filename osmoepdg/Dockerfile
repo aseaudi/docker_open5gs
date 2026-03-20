@@ -45,6 +45,7 @@ RUN apt-get update && \
 RUN git clone https://gitea.osmocom.org/erlang/osmo-epdg && \
     cd osmo-epdg && \
     git checkout tags/0.1.1 && \
+    sed -i 's/internet/ims/g' src/epdg_ue_fsm.erl && \
     rebar3 compile && \
     rebar3 escriptize
 
