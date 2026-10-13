@@ -432,14 +432,14 @@ services:
     networks:
       default:
         ipv4_address: ${OSMOHLR_IP}
-  osmoepdg:
-    build: ./osmoepdg
-    image: docker_osmoepdg
-    container_name: osmoepdg
+  epdg:
+    build: ./epdg
+    image: docker_epdg
+    container_name: epdg
     env_file:
       - .env
     volumes:
-      - ./osmoepdg:/mnt/osmoepdg
+      - ./epdg:/mnt/epdg
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     cap_add:
@@ -467,7 +467,43 @@ services:
       - "${DOCKER_HOST_IP}:4500:4500/udp"
     networks:
       default:
-        ipv4_address: ${OSMOEPDG_IP}
+        ipv4_address: ${EPDG_IP}
+  # osmoepdg:
+  #   build: ./osmoepdg
+  #   image: docker_osmoepdg
+  #   container_name: osmoepdg
+  #   env_file:
+  #     - .env
+  #   volumes:
+  #     - ./osmoepdg:/mnt/osmoepdg
+  #     - /etc/timezone:/etc/timezone:ro
+  #     - /etc/localtime:/etc/localtime:ro
+  #   cap_add:
+  #     - NET_ADMIN
+  #   privileged: true
+  #   sysctls:
+  #     - net.ipv4.ip_forward=1
+  #     - net.ipv4.conf.all.rp_filter=0
+  #     - net.ipv4.conf.default.rp_filter=0
+  #   depends_on:
+  #     - dns
+  #     - hss
+  #     - smf
+  #     - upf
+  #   expose:
+  #     - "3868/tcp"
+  #     - "3868/sctp"
+  #     - "2123/udp"
+  #     - "2152/udp"
+  #     - "500/udp"
+  #     - "500/tcp"
+  #     - "4500/udp"
+  #   ports:
+  #     - "${DOCKER_HOST_IP}:500:500/udp"
+  #     - "${DOCKER_HOST_IP}:4500:4500/udp"
+  #   networks:
+  #     default:
+  #       ipv4_address: ${OSMOEPDG_IP}
   metrics:
     build: ./metrics
     image: docker_metrics
