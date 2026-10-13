@@ -34,12 +34,12 @@ RUN apt-get update && \
 
 # Install more dependencies
 RUN apt-get update && \
-    apt-get -y install telnet iproute2 net-tools git pkg-config autoconf make libtool gettext gperf libgmp-dev bison flex automake autotools-dev rebar3 libgtpnl-dev libgtpnl-tools libpcap-dev nftables tcpdump
+    apt-get -y install telnet iproute2 net-tools git pkg-config autoconf make libtool gettext gperf libgmp-dev bison flex automake autotools-dev rebar3 libpcap-dev nftables tcpdump
 
 # Compile epdg
 RUN git clone https://github.com/aseaudi/epdg && \
     cd epdg && \
-    git checkout fix_dns_parse && \
+    git checkout epdg4 && \
     autoreconf -i && \
     ./configure \
         --sysconfdir=/etc \
@@ -51,6 +51,14 @@ RUN git clone https://github.com/aseaudi/epdg && \
         --enable-p-cscf \
         --enable-epdg \
         --enable-swanctl --enable-vici --enable-charon --disable-systemd
+
+RUN apt install -y git build-essential autoconf automake libtool pkg-config libmnl-dev && \
+    git clone https://gitea.osmocom.org/cellular-infrastructure/libgtpnl && \
+    cd libgtpnl && \ 
+    autoreconf -fi && \
+    ./configure && \
+    make && make install && \
+    ldconfig 
 
 RUN cd epdg && \
     make -j`nproc` && make install

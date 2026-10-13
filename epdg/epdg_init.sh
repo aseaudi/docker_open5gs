@@ -26,17 +26,23 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+gtp-link add gtp0 ip --sgsn $EPDG_IP &
+ip link set gtp0 up
+ip -d link show gtp0
+
 [ ${#MNC} == 3 ] && EPC_DOMAIN="epc.mnc${MNC}.mcc${MCC}.3gppnetwork.org" || EPC_DOMAIN="epc.mnc0${MNC}.mcc${MCC}.3gppnetwork.org"
 
 mkdir -p /usr/local/etc/swanctl
 mkdir -p /usr/local/etc/strongswan.d
 mkdir -p /usr/local/etc/strongswan.d/charon
+mkdir -p /etc/epdg
 mkdir -p /wireshark_keys
 cp /mnt/epdg/swanctl/swanctl.conf /etc/swanctl/swanctl.conf
 cp /mnt/epdg/strongswan.d/charon/kernel-netlink.conf /etc/strongswan.d/charon/kernel-netlink.conf
 cp /mnt/epdg/strongswan.d/charon.conf /etc/strongswan.d/charon.conf
 cp /mnt/epdg/eap-aka.conf /etc/strongswan.d/charon/eap-aka.conf
 cp /mnt/epdg/save-keys.conf /etc/strongswan.d/charon/save-keys.conf
+cp /mnt/epdg/epdg.config /etc/epdg/epdg.config
 
 EPDG_COMMA_SEPARATED_IP="${EPDG_IP//./,}"
 
@@ -87,6 +93,8 @@ sed -i 's|EPDG_TUN_INTERFACE|'$EPDG_TUN_INTERFACE'|g' /etc/nftables.conf
 sed -i 's|GTP_TRAFFIC_FWMARK|'$GTP_TRAFFIC_FWMARK'|g' /etc/nftables.conf
 sed -i 's|IPSEC_TRAFFIC_FWMARK|'$IPSEC_TRAFFIC_FWMARK'|g' /etc/nftables.conf
 nft -f /etc/nftables.conf
+
+sleep 1000000
 
 # Sync docker time
 #ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone

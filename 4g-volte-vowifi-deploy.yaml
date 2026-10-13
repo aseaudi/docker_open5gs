@@ -432,6 +432,21 @@ services:
     networks:
       default:
         ipv4_address: ${OSMOHLR_IP}
+  swu_client:
+    build: ./swu_client
+    image: docker_swu_client
+    container_name: swu_client
+    env_file:
+      - .env
+    volumes:
+      - ./swu_client:/mnt/swu_client
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    depends_on:
+      - epdg
+    networks:
+      default:
+        ipv4_address: ${SWU_CLIENT_IP}
   epdg:
     build: ./epdg
     image: docker_epdg
