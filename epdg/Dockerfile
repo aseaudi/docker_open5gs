@@ -52,6 +52,11 @@ RUN git clone https://github.com/aseaudi/epdg && \
         --enable-epdg \
         --enable-swanctl --enable-vici --enable-charon --disable-systemd
 
+RUN cd epdg && \
+    make -j`nproc` && make install
+
+RUN rm -rf epdg
+
 RUN apt install -y git build-essential autoconf automake libtool pkg-config libmnl-dev && \
     git clone https://gitea.osmocom.org/cellular-infrastructure/libgtpnl && \
     cd libgtpnl && \ 
@@ -59,8 +64,5 @@ RUN apt install -y git build-essential autoconf automake libtool pkg-config libm
     ./configure && \
     make && make install && \
     ldconfig 
-
-RUN cd epdg && \
-    make -j`nproc` && make install
 
 CMD ["/mnt/epdg/epdg_init.sh"]
